@@ -1,9 +1,8 @@
 """
+cron 0 0,7 * * *  dy.py
 安卓正常跑，苹果自己找原版
 改自by Pearson大佬，修复安卓
 开宝箱,宝箱广告,视频广告，走路
-6.2
-url是链接？后面的
 变量名(dyjsb)    url#cookie#x-argus#x-ladon
 多账号@
 ua换成自己的
