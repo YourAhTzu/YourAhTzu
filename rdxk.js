@@ -3,12 +3,11 @@
  * 项目类型：APP
  * 项目名称：热度星客
  * 项目抓包：抓m.reduxingke.com下的authorization填入变量
- cron 0 0 0,2,5,6,8,12,14,16,18,22 * * ?
  */
 
 
 //===============脚本版本=================//
-let scriptVersion = "1.0.2";
+let scriptVersion = "1.0.3";
 let update_data = "完成签到,提现";
 //=======================================//
 const $ = new Env('热度星客');
