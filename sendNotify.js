@@ -7,7 +7,7 @@
  * @param text 通知头
  * @param desp 通知体
  * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
- * @param author 作者仓库等信息  例：`作者仓库https://ghproxy.com/https://github.com/YourAhTzu/YourAhTzu.git`
+ * @param author 
  */
 
 const querystring = require('querystring');
@@ -199,7 +199,7 @@ async function sendNotify(
   text,
   desp,
   params = {},
-  author = '\n\n作者仓库https://ghproxy.com/https://github.com/YourAhTzu/YourAhTzu.git',
+  author = '\n\n作者仓库：https://github.com/YourAhTzu/YourAhTzu.git',
 ) {
   //提供6种通知
   desp += author; //增加作者信息，防止被贩卖等
