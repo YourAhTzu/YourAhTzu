@@ -1,26 +1,31 @@
 /*
+ 作者：阿慈
+ 日期：6-22
  APP：掌上瓯海
  功能：完成任务，获得积分
- 抓包：https://vapp.tmuyun.com/ 任意-请求头中 x-session-id 或使用 手机号#密码 两者互不影响
- 变量：oh='xxxx@12345678910#abcdefg '  多个账号用 @ 或者 换行 分割
- 定时一天三次
- cron: 10 8,10,19 * * *
+ 抓包：https://vapp.tmuyun.com/ 任意-请求头中 x-session-id
+ 变量：ohCookie='xxxx@12345678910#abcdefg '
+ cron 10 8,10,19 * * *
  */
- const $ = new Env('掌上瓯海')
+ const $ = new Env('瓯海')
  const notify = $.isNode() ? require('./sendNotify') : '';
  const CryptoJS = require("crypto-js");
  const salt = "FR*r!isE5W";
  const appid = 78;
  let cookiesArr = [],
    message = "",
+
+
    channelId = ["643fafe2e305b47056547554"]
- cookie = ($.isNode() ? process.env.oh : $.getdata("oh")) || ``
- helpAu = ($.isNode() ? process.env.ohlpAu : $.getdata("ohlpAu")) || true
+ cookie = ($.isNode() ? process.env.ohCookie : $.getdata("ohCookie")) || ``
+ helpAu = ($.isNode() ? process.env.ohhelpAu : $.getdata("ohhelpAu")) || true
  !(async () => {
      await requireConfig();
      for (let i = 0; i < cookiesArr.length; i++) {
+         //console.log(cookiesArr[i])
        if (cookiesArr[i]) {
-         sessionid = ''
+         sessionid = cookiesArr[i].split('&')[0];
+         $.ACCOUNT = cookiesArr[i].split('&')[1];
          msg = '';
          $.index = i + 1;
          $.nickName = '';
@@ -30,9 +35,9 @@
          $.vehicleToken = '';
          $.taskList = {}
          $.queryList = {}
-         await getCookie(cookiesArr[i])
+         //await getCookie(cookiesArr[i])
          await account_detail();
-         console.log(`\n******开始【🐳掌上瓯海账号${$.index}】${$.nickName}|${$.mobile}*********\n`);
+         console.log(`\n******开始【🐳瓯海账号${$.index}】${$.nickName}|${$.mobile}*********\n`);
          await main()
        }
      }
@@ -59,7 +64,7 @@
        }
      }
      if (helpAu == true) {
-       console.log(`【前往助力作者】`)
+       console.log(`【环境变量：ohhelpAu 默认为True 前往助力作者】`)
        await invite()
      }
      console.log(`【查询账号信息】`)
@@ -71,10 +76,12 @@
  }
  async function doTask(task) {
    let type = JSON.stringify(task.id);
+   //console.log(task)
    let num = Number(task.frequency) - Number(task.finish_times)
    //console.log(`去完成：${task.name},id：${type}`)
+   await signin()
    switch (type) {
-     case '786': //签到
+     case '337': //签到
        await signin()
        break;
      case '2002': //新闻资讯阅读
@@ -104,6 +111,18 @@
          await like($.acticleList[j].id)
          await $.wait(1500)
        }
+       break;
+     case '1997': //使用本地服务
+       for (j = 0; j < num && j < $.acticleList.length; j++) {
+         await local()
+         await $.wait(1500)
+       }
+       break;
+     case '1709': //邀请
+       console.log(`邀请功能暂未上线`)
+       break;
+     default:
+       console.log(`${task.name}暂未上线,请反馈作者`);
    }
  }
  /**
@@ -113,7 +132,7 @@
   async function credential_auth() {
    let url = {
      url: `https://passport.tmuyun.com/web/oauth/credential_auth`,
-     body: `client_id=10032&password=${encodeURIComponent($.pwd)}&phone_number=${$.mobile}`,
+     body: `client_id=48&password=${encodeURIComponent($.pwd)}&phone_number=${$.mobile}`,
      headers: {
        'Host': 'passport.tmuyun.com',
        'Content-Type': 'application/x-www-form-urlencoded',
@@ -153,7 +172,7 @@
   */
  async function login(code) {
    let body = 'code=' + code
-   sessionid = '64643fc62cd91836ea7e0ca1'
+   sessionid = '63777162fe3fc118b09fab89'
    return new Promise(resolve => {
      $.post(taskPostUrl('/api/zbtxz/login', body), async (err, resp, data) => {
        try {
@@ -187,6 +206,7 @@
   */
  async function account_detail() {
    let body = ''
+   //console.log(taskUrl("/api/user_mumber/account_detail", body))
    return new Promise(resolve => {
      $.get((taskUrl("/api/user_mumber/account_detail", body)), async (err, resp, data) => {
        try {
@@ -205,7 +225,7 @@
                $.grade_name = data.data.rst.grade_name
                $.integral = data.data.rst.total_integral
              } else {
-               //console.log(JSON.stringify(data))
+               console.log(JSON.stringify(data))
              }
            } else {
              console.log("没有返回数据")
@@ -224,8 +244,9 @@
   * 获取任务列表
   */
  async function numberCenter() {
-   let body = ''
-   return new Promise(resolve => {
+   let body = '?is_new=1'
+   //console.log(taskUrl("/api/user_mumber/numberCenter", body))
+   return new Promise(resolve => {//https://vapp.tmuyun.com/api/user_mumber/numberCenter?is_new=1
      $.get((taskUrl("/api/user_mumber/numberCenter", body)), async (err, resp, data) => {
        try {
          if (err) {
@@ -234,7 +255,7 @@
          } else {
            if (data) {
              data = JSON.parse(data);
-             //console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
              if (data.code === 0) {
                console.log(`获取成功！`)
                $.taskList = data.data.rst['user_task_list']
@@ -495,7 +516,7 @@
   * 助力
   */
  async function invite() {
-   let body = `ref_code=GN4XZ9 `
+   let body = `ref_code=MKLCX9`
    return new Promise(resolve => {
      $.post((taskPostUrl("/api/account/update_ref_code", body)), async (err, resp, data) => {
        try {
@@ -536,12 +557,13 @@
        "X-REQUEST-ID": requestid,
        "X-TIMESTAMP": timestamp,
        "X-SIGNATURE": sign,
+       "X-ACCOUNT-ID":$.ACCOUNT,
        "Cache-Control": `no-cache`,
-       "X-TENANT-ID": 44,
+       "X-TENANT-ID": appid,
        'Host': 'vapp.tmuyun.com',
        'Connection': 'Keep-Alive',
        "Content-Type": `application/x-www-form-urlencoded`,
-       'User-Agent': `1.2.2;${requestid};iPad13,4;IOS;16.2;Appstore`
+       'User-Agent': `3.0.1;${requestid};iPad13,4;IOS;16.2;Appstore`
      },
    }
  }
@@ -557,7 +579,7 @@
        "X-TIMESTAMP": timestamp,
        "X-SIGNATURE": sign,
        "Cache-Control": `no-cache`,
-       "X-TENANT-ID": 44,
+       "X-TENANT-ID": appid,
        'Host': 'vapp.tmuyun.com',
        'Connection': 'Keep-Alive',
        "Content-Type": `application/x-www-form-urlencoded`,
@@ -650,10 +672,10 @@
      } else {
        cookiesArr.push(cookie);
      }
-     console.log(`\n=============================================    \n脚本执行 - 北京时间(UTC+8)：${new Date(new Date().getTime() +new Date().getTimezoneOffset() * 3 * 1000 + 8 * 3 * 3 * 1000).toLocaleString()} \n=============================================\n`)
+     console.log(`\n=============================================    \n脚本执行 - 北京时间(UTC+8)：${new Date(new Date().getTime() +new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000).toLocaleString()} \n=============================================\n`)
      console.log(`\n=========共有${cookiesArr.length}个${$.name}账号Cookie=========\n`);
    } else {
-     console.log(`\n【作者提示缺少oh变量】`)
+     console.log(`\n【缺少ohCookie环境变量或者ohCookie为空！】`)
      return;
    }
  }
