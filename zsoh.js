@@ -64,7 +64,7 @@
        }
      }
      if (helpAu == true) {
-       console.log(`【环境变量：ohhelpAu 默认为True 前往助力作者】`)
+       console.log(`【前往助力作者】`)
        await invite()
      }
      console.log(`【查询账号信息】`)
@@ -122,7 +122,6 @@
        console.log(`邀请功能暂未上线`)
        break;
      default:
-       console.log(`${task.name}暂未上线,请反馈作者`);
    }
  }
  /**
