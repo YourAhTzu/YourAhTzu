@@ -2,9 +2,7 @@
  作者：阿慈
  日期：6-22
  APP：掌上瓯海
- 功能：完成任务，获得积分
- 抓包：https://vapp.tmuyun.com/ 任意-请求头中 x-session-id
- 变量：ohCookie='xxxx@12345678910#abcdefg '
+ 功能：完成任务，获得积分，内置助力作者
  cron 10 8,10,19 * * *
  */
  const $ = new Env('瓯海')
