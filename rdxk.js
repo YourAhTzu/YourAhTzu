@@ -59,8 +59,9 @@ let hostname = 'https://' + host;
  * 获取基础信息
  * @returns {Promise<boolean>}
  */
-async function start() 
+async function start() {
     await sign(2 * 1000);
+    await $.wait(2000);
     return true;
 }
 /**
