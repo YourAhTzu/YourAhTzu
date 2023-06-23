@@ -7,15 +7,15 @@
 
 
 //===============脚本版本=================//
-let scriptVersion = "1.0.3";
-let update_data = "完成签到,提现";
+let scriptVersion = "1.0.1";
+let update_data = "完成签到";
 //=======================================//
 const $ = new Env('热度星客');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const {log} = console;
 let scriptVersionLatest = "";
-let UserCookie = ($.isNode() ? process.env.rdxk : $.getdata('rdxk')) || '';
+let UserCookie = ($.isNode() ? process.env.lekebo_rdxk_Cookie : $.getdata('lekebo_rdxk_Cookie')) || '';
 let UserCookieArr = [];
 let data = '';
 let msg =``;
@@ -30,7 +30,7 @@ let hostname = 'https://' + host;
         if (!(await Envs())){
             return;
         } else {
-            DoubleLog(`\n 此脚本交流与学习`)
+            DoubleLog(`\n 交流Q群：104062430 作者:乐客播 欢迎前来提交bug`)
             await getVersion();
             DoubleLog(`\n================ 共找到 ${UserCookieArr.length} 个账号 ================ \n 脚本执行✌北京时间(UTC+8)：${new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000).toLocaleString()} \n================ 版本对比检查更新 ================`);          
             if (scriptVersionLatest != scriptVersion) {
@@ -59,49 +59,9 @@ let hostname = 'https://' + host;
  * 获取基础信息
  * @returns {Promise<boolean>}
  */
-async function start() {
-    await getMemberInfo(2 * 1000);
-    await $.wait(2000);
+async function start() 
     await sign(2 * 1000);
-    await $.wait(2000);
-    await withdraw(2 * 1000);
-    await $.wait(2000);
     return true;
-}
-/**
- * 查询会员信息
- * @param timeout
- * @returns {Promise<unknown>}
- */
-function getMemberInfo(timeout = 2000) {
-    return new Promise((resolve) => {
-        let url = {
-            url: `${hostname}/api/user`,
-            headers: {
-                'Host': host,
-                'Content-Type': 'application/json',
-				'authori-zation': 'Bearer'+ck[0],
-                'version': '10242',
-                'User-Agent': getUA(),
-            },
-        }
-        $.get(url, async (error, response, data) => {
-            try {
-                let result = JSON.parse(data);
-                if (result.status == 200) {
-                    txje = Math.round(result.data.brokerage_price)
-                    //console.log(txje)
-                    DoubleLog(`\n 会员查询: ✅ ，${result.data.phone} 当前拥有：${result.data.brokerage_price} 元`)
-                } else {
-                    DoubleLog(`\n 会员查询: ❌ ，原因是：${result.msg}`)
-                }
-            } catch (e) {
-                DoubleLog(`\n 信息异常: ❌ ，${data}，原因：${e}`)
-            } finally {
-                resolve();
-            }
-        }, timeout)
-    })
 }
 /**
  * 签到
@@ -115,8 +75,8 @@ function sign(timeout = 2000) {
             headers: {
                 'Host': host,
 				'Content-Type': 'application/json',
-                'Form-type': 'app',
-				'Authori-zation': 'Bearer'+ck[0],
+                'Form-type': 'routine',
+				'Authori-zation': 'Bearer' + ck[0],
                 'User-Agent': getUA(),
                 'version': '10095',
                 'Referer': 'https://servicewechat.com/wx9e9a49f5659aa37b/3/page-frame.html',
@@ -138,39 +98,36 @@ function sign(timeout = 2000) {
         }, timeout)
     })
 }
-/**
- * 提现
- * @param timeout
- * @returns {Promise<unknown>}
- */
-function withdraw(timeout = 2000) {
-    return new Promise((resolve) => {
-        let url = {
-            url: `${hostname}/api/user/applyExtract`,
-            headers: {
-                'Host': host,
-				'authori-zation': 'Bearer'+ck[0],
-                'User-Agent': getUA(),
-            },
-            body: `{"brokerage":"${txje}","pwd":"274023","extract_type":"alipay"}`,
-        }
-        $.post(url, async (error, response, data) => {
-            try {
-                let result = JSON.parse(data);
-                //console.log(result)
-                if (result.status == 200) {
-                    DoubleLog(`\n 提现成功: ✅ ，${result.msg}`)
-                } else {
-                    DoubleLog(`\n 提现失败: ❌ ，原因是：${result.msg}`)
-                }
-            } catch (e) {
-                DoubleLog(`\n 信息异常: ❌ ，${data}，原因：${e}`)
-            } finally {
-                resolve();
+
+
+
+// ============================================重写============================================ \\
+async function GetRewrite() {
+    if ($request.url.indexOf("member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId") > -1) {
+        let ck = '';
+        let theRequest = new Object();
+        if ($request.url.indexOf("?") != -1) {
+            let info = $request.url.split('?');
+            let strs = info[1].split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
             }
-        }, timeout)
-    })
+            ck = theRequest.memberId;
+        }
+        if (kwwUid) {
+            if (memberId.indexOf(ck) == -1) {
+                memberId = memberId + "@" + ck;
+                $.setdata(memberId, "kwwUid");
+                List = memberId.split("@");
+                $.msg(`【${$.name}】` + ` 获取第${memberId.length}个 ck 成功: ${ck} ,不用请自行关闭重写!`);
+            }
+        } else {
+            $.setdata(ck, "memberId");
+            $.msg(`【${$.name}】` + ` 获取第1个 ck 成功: ${ck} ,不用请自行关闭重写!`);
+        }
+    }
 }
+
 
 // ============================================变量检查============================================ \\
 async function Envs() {
@@ -187,7 +144,7 @@ async function Envs() {
             UserCookieArr.push(UserCookie);
         }
     } else {
-        console.log(`\n 系统提示：系统变量未填写 rdxk`)
+        console.log(`\n 乐客播提示：系统变量未填写 lekebo_rdxk_Cookie`)
         return;
     }
     return true;
@@ -299,7 +256,7 @@ function modify() {
 function getVersion(timeout = 3 * 1000) {
     return new Promise((resolve) => {
         let url = {
-            url: `https://raw.githubusercontent.com/YourAhTzu/YourAhTzu./main/rdxk`,
+            url: `https://ghproxy.com/https://raw.githubusercontent.com/qq274023/lekebo/master/lekebo_kww.js`,
         }
         $.get(url, async (err, resp, data) => {
             try {
