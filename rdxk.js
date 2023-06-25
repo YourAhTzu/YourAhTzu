@@ -1,6 +1,9 @@
+/**
+ *在133行该为自己支付密码提现默认提现wechat需要提交支付宝填alipay
+ */
 //===============脚本版本=================//
-let scriptVersion = "1.0.1";
-let update_data = "完成签到";
+let scriptVersion = "1.1";
+let update_data = "完成签到，提现";
 //=======================================//
 const $ = new Env('热度星客');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -54,6 +57,8 @@ let hostname = 'https://' + host;
 async function start() {
     await sign(2 * 1000);
     await $.wait(2000);
+    await tx(2 * 1000);
+    await $.wait(2000);
     return true;
 }
 /**
@@ -91,36 +96,39 @@ function sign(timeout = 2000) {
         }, timeout)
     })
 }
-
-
-
-// ============================================重写============================================ \\
-async function GetRewrite() {
-    if ($request.url.indexOf("member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId") > -1) {
-        let ck = '';
-        let theRequest = new Object();
-        if ($request.url.indexOf("?") != -1) {
-            let info = $request.url.split('?');
-            let strs = info[1].split("&");
-            for (var i = 0; i < strs.length; i++) {
-                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-            }
-            ck = theRequest.memberId;
+/**
+ *提现
+ * @param timeout
+ * @returns {Promise<unknown>}
+ */
+function tx(timeout = 2000) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${hostname}/api/user/applyExtract`,
+            headers: {
+                'Host': host,
+				'authori-zation': 'Bearer ' + ck[0],
+                'User-Agent': getUA(),
+            },
+            body: `{"brokerage":"${txje}","pwd":"290955","extract_type":"wechat"}`,
         }
-        if (kwwUid) {
-            if (memberId.indexOf(ck) == -1) {
-                memberId = memberId + "@" + ck;
-                $.setdata(memberId, "kwwUid");
-                List = memberId.split("@");
-                $.msg(`【${$.name}】` + ` 获取第${memberId.length}个 ck 成功: ${ck} ,不用请自行关闭重写!`);
+        $.post(url, async (error, response, data) => {
+            try {
+                let result = JSON.parse(data);
+                //console.log(result)
+                if (result.status == 200) {
+                    DoubleLog(`\n 提现成功: ✅ ，${result.msg}`)
+                } else {
+                    DoubleLog(`\n 提现失败: ❌ ，原因是：${result.msg}`)
+                }
+            } catch (e) {
+                DoubleLog(`\n 信息异常: ❌ ，${data}，原因：${e}`)
+            } finally {
+                resolve();
             }
-        } else {
-            $.setdata(ck, "memberId");
-            $.msg(`【${$.name}】` + ` 获取第1个 ck 成功: ${ck} ,不用请自行关闭重写!`);
-        }
-    }
+        }, timeout)
+    })
 }
-
 
 // ============================================变量检查============================================ \\
 async function Envs() {
