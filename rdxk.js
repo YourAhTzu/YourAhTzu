@@ -1,5 +1,6 @@
 /**
  *在133行该为自己支付密码提现默认提现wechat需要提交支付宝填alipay
+ *默认一元提现诺有bug等待测试更新
  */
 //===============脚本版本=================//
 let scriptVersion = "1.1";
@@ -107,10 +108,10 @@ function tx(timeout = 2000) {
             url: `${hostname}/api/user/applyExtract`,
             headers: {
                 'Host': host,
-				'authori-zation': 'Bearer ' + ck[0],
+				'authori-zation': 'Bearer' + ck[0],
                 'User-Agent': getUA(),
             },
-            body: `{"brokerage":"${txje}","pwd":"290955","extract_type":"wechat"}`,
+            body: `{"brokerage":"${1}","pwd":"290955","extract_type":"wechat"}`,
         }
         $.post(url, async (error, response, data) => {
             try {
