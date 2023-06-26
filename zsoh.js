@@ -1,5 +1,6 @@
 /* 
 * 23/6/26 修复点赞
+* 23/6/27 多号报错未修复
 */
  const $ = new Env('瓯海')
  const notify = $.isNode() ? require('./sendNotify') : '';
