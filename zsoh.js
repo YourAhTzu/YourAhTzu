@@ -285,7 +285,6 @@
              data = JSON.parse(data);
              //console.log(JSON.stringify(data));
              if (data.code === 0) {
-               console.log(`签到成功！获得：${data.data.signIntegral}积分`)
              } else {
                console.log(data.message)
              }
