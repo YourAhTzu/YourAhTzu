@@ -10,7 +10,7 @@
  const appid = 78;
  let cookiesArr = [],
    message = "",
-   channelId = ["643fb00de305b47056547556",]
+   channelId = ["643fb00de305b47056547556", "643fb01979f6be441837aba9", "643fb03579f6be441837abaa", "643fb026e305b47056547557","643fb18fe305b4705654755f"]
  cookie = ($.isNode() ? process.env.ohCookie : $.getdata("ohCookie")) || ``
  helpAu = ($.isNode() ? process.env.ohhelpAu : $.getdata("ohhelpAu")) || true
  !(async () => {
