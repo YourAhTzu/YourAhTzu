@@ -111,7 +111,7 @@ function tx(timeout = 2000) {
 				'authori-zation': 'Bearer' + ck[0],
                 'User-Agent': getUA(),
             },
-            body: `{"brokerage":"${1}","pwd":"290955","extract_type":"wechat"}`,
+            body: `{"brokerage":"2","pwd":"290955","extract_type":"wxpay"}`,
         }
         $.post(url, async (error, response, data) => {
             try {
