@@ -43,30 +43,30 @@ class UserInfo {
         this.ckStatus = true;
     }
 
-    async user_info() {
+    async user_info(name) { // 用户信息
         try {
             let options = {
-                url: `${this.hostname}/n/api/sign/userSignIn`,
-                headers: { 
-                'Host': '211.yyyy.run',
-                'token':this.ck[0],
-            },
-                result = await httpRequest(options);
+                method: "Post",
+                url: `${this.hostname}/api/sign/userSignIn`,
+                headers: {
+                    'Host': '211.yyyy.run',
+                    'token':this.ck[0],
+                },
+            };
             //console.log(options);
+            let result = await httpRequest(options, name);
             //console.log(result);
-            if (result.errcode == 0) {
-                $.DoubleLog(`账号[${this.index}]  欢迎用户: ${result.errcode}🎉`);
-                this.ckStatus = true;
+            if (result.code == 1) {
+                DoubleLog(`账号[${this.index}]  第${i+1}次打卡: ${result.msg}`);
             } else {
-                $.DoubleLog(`账号[${this.index}]  用户查询:失败 ❌ 了呢,原因未知！`);
-                this.ckStatus = false;
+                DoubleLog(`账号[${this.index}]  用户查询:失败 ❌ 了呢,原因未知！`);
                 //console.log(result);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
         }
     }
-}
+
 
 !(async () => {
     if (!(await checkEnv())) return;
@@ -125,7 +125,7 @@ function httpRequest(options, method = null) {
  */
 function getVersion(scriptUrl, timeout = 3 * 1000) {
     return new Promise((resolve) => {
-        const options = { url: `https://ghproxy.com/https://raw.githubusercontent.com/${scriptUrl}` };
+        const options = { url: `https://ghproxy.com/https://raw.githubusercontent.com/YourAhTzu/blob/main/ttdk` };
         $.get(options, (err, resp, data) => {
             try {
                 const regex = /scriptVersionNow\s*=\s*(["'`])([\d.]+)\1/;
@@ -145,10 +145,7 @@ function getVersion(scriptUrl, timeout = 3 * 1000) {
 async function getNotice() {
     try {
         const urls = [
-            "https://cdn.jsdelivr.net/gh/smallfawn/Note@main/Notice.json",
-            "https://ghproxy.com/https://raw.githubusercontent.com/smallfawn/Note/main/Notice.json",
-            "https://fastly.jsdelivr.net/gh/smallfawn/Note@main/Notice.json",
-            "https://gitee.com/smallfawn/Note/raw/master/Notice.json",
+            "https://ghproxy.com/https://raw.githubusercontent.com/YourAhTzu/blob/main/tz.json",
         ];
         let notice = null;
         for (const url of urls) {
