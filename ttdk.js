@@ -46,10 +46,10 @@ class UserInfo {
     async user_info() {
         try {
             let options = {
-                url: `${this.hostname}/get.php`,
+                url: `${this.hostname}/n/api/sign/userSignIn`,
                 headers: { 
                 'Host': '211.yyyy.run',
-                'token':this.ck[0],},
+                'token':this.ck[0],
             },
                 result = await httpRequest(options);
             //console.log(options);
