@@ -64,7 +64,7 @@ async function start() {
 function sign(timeout = 2000) {
     return new Promise((resolve) => {
         let url = {
-            url: `${hostname}/shop/v1.sign/sign_day`,
+            url: `${hostname}/api/sign/userSignIn`,
             headers: {
                 'Host': host,
                  'token': ck[0],
