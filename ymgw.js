@@ -12,7 +12,7 @@ let UserCookieArr = [];
 let data = '';
 let msg =``;
 let isSign = false;
-let host = 'api.yunmoushop.com';
+let host = '211.yyyy.run';
 let hostname = 'https://' + host;
 //=======================================//
 !(async () => {
@@ -67,11 +67,8 @@ function sign(timeout = 2000) {
             url: `${hostname}/shop/v1.sign/sign_day`,
             headers: {
                 'Host': host,
-				'Content-type': 'application/json',
-                "Cache-Control": "no-cache",
-				'xu-token': ck[0],
-                'User-Agent': getUA(),
-                'Referer': 'https://servicewechat.com/wxb141013168999c67/14/page-frame.html',
+                 'token': ck[0],
+                'User-Agent': getUA()
             },
         }
         $.post(url, async (error, response, data) => {
