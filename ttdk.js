@@ -1,6 +1,9 @@
+/*
+变量名：天天打卡抓token即可一天一块钱
+*/
 //===============脚本版本=================//
 let scriptVersion = "1.1";
-let update_data = "完成签到";
+let update_data = "完成签到，打卡20次";
 //=======================================//
 const $ = new Env('天天打卡');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -12,7 +15,7 @@ let UserCookieArr = [];
 let data = '';
 let msg =``;
 let isSign = false;
-let host = '211.yyyy.run';';
+let host = '211.yyyy.run';
 let hostname = 'https://' + host;
 //=======================================//
 !(async () => {
@@ -52,8 +55,10 @@ let hostname = 'https://' + host;
  * @returns {Promise<boolean>}
  */
 async function start() {
+    for (let i = 0; i < 20; i++) {  
     await sign(2 * 1000);
     await $.wait(2000);
+    }
     return true;
 }
 /**
@@ -64,7 +69,7 @@ async function start() {
 function sign(timeout = 2000) {
     return new Promise((resolve) => {
         let url = {
-            url: `${hostname}/shop/v1.sign/sign_day`,
+            url: `${hostname}/api/sign/userSignIn`,
             headers: {
                 'Host': host,
 				'token': ck[0],
@@ -219,7 +224,7 @@ function getVersion(timeout = 3 * 1000) {
         $.get(url, async (err, resp, data) => {
             try {
                 scriptVersionLatest = data.match(/scriptVersion = "([\d\.]+)"/)
-                update_data = data.match(/update_data = "(.*?)"/)[1]
+                update_data = data.match(/update_data = "(.*?)"/)
             } catch (e) {
                 $.logErr(e, resp);
             } finally {
