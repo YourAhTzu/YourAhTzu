@@ -2,7 +2,7 @@
 让scriptVersion="1.1";
 让update_data="完成签到";
 //=======================================//
-常数$=新的env('天天打卡');
+const $ = new Env('天天打卡');
 Const通知=$.isode()?需要('./sendNotify'):'';
 Const通知=1 		//0为关闭通知,1为打开通知,默认为1
 Const{日志}=控制台；
