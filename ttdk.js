@@ -1,9 +1,9 @@
 /*
-变量名：天天打卡抓token即可一天一块钱
-*/
+小白制作奥力给
+ */
 //===============脚本版本=================//
-let scriptVersion = "1.1";
-let update_data = "完成签到，打卡20次";
+let scriptVersion = "1.2";
+let update_data = "完成签到，待完善提现";
 //=======================================//
 const $ = new Env('天天打卡');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -56,7 +56,7 @@ let hostname = 'https://' + host;
  */
 async function start() {
     for (let i = 0; i < 20; i++) {  
-    await sign(2 * 1000);
+    await sign(2 * 9000);
     await $.wait(2000);
     }
     return true;
@@ -79,7 +79,7 @@ function sign(timeout = 2000) {
         $.post(url, async (error, response, data) => {
             try {
                 let result = JSON.parse(data);
-                if (result.code == 200) {
+                if (result.code == 1) {
                     DoubleLog(`\n 签到成功: ✅ ，${result.msg}`)
                 } else {
                     DoubleLog(`\n 签到失败: ❌ ，原因是：${result.msg}`)
@@ -92,6 +92,7 @@ function sign(timeout = 2000) {
         }, timeout)
     })
 }
+
 // ============================================变量检查============================================ \\
 async function Envs() {
     if (UserCookie) {
@@ -223,8 +224,8 @@ function getVersion(timeout = 3 * 1000) {
         }
         $.get(url, async (err, resp, data) => {
             try {
-                scriptVersionLatest = data.match(/scriptVersion = "([\d\.]+)"/)
-                update_data = data.match(/update_data = "(.*?)"/)
+                scriptVersionLatest = data.match(/scriptVersion = "([\d\.]+)"/)[1]
+                update_data = data.match(/update_data = "(.*?)"/)[1]
             } catch (e) {
                 $.logErr(e, resp);
             } finally {
