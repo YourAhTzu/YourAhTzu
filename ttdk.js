@@ -56,8 +56,8 @@ let hostname = 'https://' + host;
  */
 async function start() {
     for (let i = 0; i < 20; i++) {  
-    await sign(2 * 9000);
-    await $.wait(2000);
+    await sign();
+    await $.wait(9 * 9000);
     }
     return true;
 }
